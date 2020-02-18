@@ -1,13 +1,32 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   const Todo = sequelize.define('Todo', {
-    title: DataTypes.STRING,
-    description: DataTypes.TEXT,
-    user_id: DataTypes.INTEGER,
-    id_status: DataTypes.INTEGER,
-    due_date: DataTypes.DATE,
-    created_at: DataTypes.DATE,
-    updated_at: DataTypes.DATE
+    title: { 
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        len: [3]
+      }
+    },
+    description: { 
+      type: DataTypes.TEXT
+    },
+    user_id: { 
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    id_status: { 
+      type: DataTypes.INTEGER
+    },
+    due_date: { 
+      type: DataTypes.DATE,
+    },
+    created_at: { 
+      type: DataTypes.DATE
+    },
+    updated_at: { 
+      type: DataTypes.DATE
+    }
   }, {});
   Todo.associate = function(models) {
     // associations can be defined here
