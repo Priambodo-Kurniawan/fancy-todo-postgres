@@ -8,31 +8,23 @@ var methods = {}
 
 methods.findAll = async (req, res) => {
     try {
-        const users = await User.findAll();
+        const users = await User.findAll({
+            attributes: { exclude: ['password'] }
+        });
         if (users) {
-            return res.status(200).json({ users })
+            return res.status(200).json({ users });
         };
     } catch (error) {
         return res.status(500).json({error: error.message});
     }
 }
 
-methods.getOne = (req, res) => {
-    var userId = req.params.id;
-
-    User.findByPk(userId)
-    .then(data => {
-        res.send(data);
-    })
-    .catch(err=>{
-        res.send(err);
-    })
-}
 methods.getUserById = async (req, res) => {
     try {
         const userId = req.params.id;
         const user = await User.findOne({
-            where: { id: userId }
+            where: { id: userId },
+            attributes: { exclude: ['password'] }
         });
         if (user) {
             return res.status(200).json({ user })
