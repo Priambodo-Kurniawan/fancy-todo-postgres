@@ -11,6 +11,9 @@ app.use(bodyParser.urlencoded({ extended: false}));
 var todos = require('./routes/todos');
 app.use('/api/todos', todos);
 
+var users = require('./routes/users');
+app.use('/api/users', users);
+
 app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`);
 });
