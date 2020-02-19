@@ -11,7 +11,7 @@ router.get('/:id/todo', auth.authUser, todo.getByUserId);
 router.post('/:id/create', auth.authUser, todo.create)
 
 // get task by id
-router.get('/:id', todo.getTodoById)
+router.get('/:id', auth.authUser, todo.getTodoById)
 
 // update task
 router.put('/:id', auth.authUser, todo.updateTodoById)

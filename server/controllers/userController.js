@@ -2,7 +2,7 @@ require('dotenv').config();
 const saltRounds = 10;
 
 const db = require('../database/models');
-const { User } = db;
+const { User, Todo } = db;
 var bcrypt = require('bcrypt');
 var methods = {}
 
@@ -24,6 +24,10 @@ methods.getUserById = async (req, res) => {
         const userId = req.params.id;
         const user = await User.findOne({
             where: { id: userId },
+            include: [{
+                model: Todo,
+                as: 'todos' // specifies how we want to be able to access our joined rows on the returned data
+            }],
             attributes: { exclude: ['password'] }
         });
         if (user) {
