@@ -60,33 +60,28 @@ methods.login = async (req, res) => {
             }
         });
     } catch (error) {
-        return res.status(500).json({error: error.message});
+        return error;
+        //return res.status(500).json({error: error.message});
     }
 }
   
-methods.authUser = (req, res, next) => {
-    const token = req.headers.token;
-    jwt.verify(token, secret, (err, decoded) => {
-      if (decoded.id == req.params.id){
-        req.body.token = token;
-        next()
-      } else {
-        res.status(401).json({
-            error: {
-                code: 401,
-                message: 'Not Authorized'
-            }
-        });
-      }
-    })
-}
-  
-methods.allUser = (req, res, next) => {
-    const token = req.headers.token;
-    jwt.verify(token, secret, (err, decoded) => {
-        if (decoded) {
-            req.body.token = token;
-            next()
+methods.authUser = async (req, res, next) => {
+    try {
+        const token = req.headers.token;
+        if (token) {
+            jwt.verify(token, secret, (err, decoded) => {
+              if (decoded.id == req.params.id){
+                req.body.token = token;
+                next()
+              } else {
+                res.status(401).json({
+                    error: {
+                        code: 401,
+                        message: 'Not Authorized'
+                    }
+                });
+              }
+            })
         } else {
             res.status(401).json({
                 error: {
@@ -95,7 +90,34 @@ methods.allUser = (req, res, next) => {
                 }
             });
         }
-    })
+    } catch (error) {
+        return res.status(500).send(error.message);
+    }
+    
+}
+  
+methods.allUser = async (req, res, next) => {
+    try {
+        const token = req.headers.token;
+        if (token) {
+            jwt.verify(token, secret, (err, decoded) => {
+                if (decoded) {
+                    req.body.token = token;
+                    next()
+                } else {
+                    res.status(401).json({
+                        error: {
+                            code: 401,
+                            message: 'Not Authorized'
+                        }
+                    });
+                }
+            })
+        }
+    } catch (error) {
+        return res.status(500).send(error.message);
+    }
+    
 }
   
 module.exports = methods;

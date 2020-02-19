@@ -1,7 +1,8 @@
 require('dotenv').config();
 const saltRounds = 10;
 
-var User = require('../database/models/user');
+const db = require('../database/models');
+const { User } = db;
 var bcrypt = require('bcrypt');
 var methods = {}
 
@@ -11,11 +12,22 @@ methods.findAll = async (req, res) => {
         if (users) {
             return res.status(200).json({ users })
         };
-    } catch {
+    } catch (error) {
         return res.status(500).json({error: error.message});
     }
 }
 
+methods.getOne = (req, res) => {
+    var userId = req.params.id;
+
+    User.findByPk(userId)
+    .then(data => {
+        res.send(data);
+    })
+    .catch(err=>{
+        res.send(err);
+    })
+}
 methods.getUserById = async (req, res) => {
     try {
         const userId = req.params.id;
@@ -24,7 +36,7 @@ methods.getUserById = async (req, res) => {
         });
         if (user) {
             return res.status(200).json({ user })
-        };
+        }
         return res.status(404).json({
             error: {
                 code: 404,

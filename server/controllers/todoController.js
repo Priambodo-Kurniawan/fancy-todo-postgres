@@ -1,5 +1,6 @@
 const db = require('../database/models');
 const { Todo } = db;
+const util = require('../helpers/util');
 
 // var util = require('../helpers/util');
 var methods = {};
@@ -16,17 +17,37 @@ methods.getAll = async (req, res) => {
 };
 
 methods.getByUserId = (req, res) => {
-};
+    const token = req.headers.token;
+    util.userInfo(token, async function(user){
+        try {
+            const userId = user.id
+            const todo = await Todo.findAll({
+                where: {
+                    user_id: userId
+                }
+            });
+            return res.status(201).json ({
+                todo
+            });
+        } catch (error) {
+            return res.status(500).json({error: error.message});
+        }
+    });
+}
 
 methods.create = async (req, res) => {
-    try {
-        const todo = await Todo.create(req.body);
-        return res.status(201).json ({
-            todo
-        });
-    } catch (error) {
-        return res.status(500).json({error: error.message});
-    }
+    const token = req.headers.token;
+    util.userInfo(token, async function(user){
+        try {
+            req.body.user_id = user.id
+            const todo = await Todo.create(req.body);
+            return res.status(201).json ({
+                todo
+            });
+        } catch (error) {
+            return res.status(500).json({error: error.message});
+        }
+    });
 };
 
 methods.getTodoById = async (req, res) => {
