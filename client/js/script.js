@@ -1,4 +1,23 @@
 // login
+let page = {
+    login: {
+        name: 'login',
+        path: '/login'
+    },
+    register: {
+        name: 'register',
+        path: '/register'
+    },
+    todo: {
+        name: 'todo',
+        path: '/todo'
+    }
+}
+
+function setToken (token) {
+    localStorage.setItem('token', token);
+}
+
 $("#form-login").submit(function(e){
     let email = $('#form-email').val();
     let password = $('#form-password').val();
@@ -9,13 +28,19 @@ $("#form-login").submit(function(e){
         data: { email, password }
     })
     .done(function( data ) {
-        console.log(data);
         Swal.fire({
             icon: 'success',
             title: 'Login Success!',
             showConfirmButton: false,
             timer: 1500
         });
+
+        // set to localstorage
+        setToken(data.token);
+
+        // change path
+        page.data = data;
+        history.pushState(page, page.todo.name, page.todo.path)
     })
     .fail(function(err) {
         let message = err.responseJSON.message
