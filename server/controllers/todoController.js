@@ -16,25 +16,6 @@ methods.getAll = async (req, res) => {
     }
 };
 
-methods.getByUserId = (req, res) => {
-    const token = req.headers.token;
-    util.userInfo(token, async function(user){
-        try {
-            const userId = user.id
-            const todo = await Todo.findAll({
-                where: {
-                    user_id: userId
-                }
-            });
-            return res.status(201).json ({
-                todo
-            });
-        } catch (error) {
-            return res.status(500).json({error: error.message});
-        }
-    });
-}
-
 methods.create = async (req, res) => {
     const token = req.headers.token;
     util.userInfo(token, async function(user){
@@ -52,7 +33,7 @@ methods.create = async (req, res) => {
 
 methods.getTodoById = async (req, res) => {
     try {
-        const todoId = req.params.id;
+        const todoId = req.params.id_todo;
         const todo = await Todo.findOne({
             where: { id: todoId }
         });
@@ -72,7 +53,7 @@ methods.getTodoById = async (req, res) => {
 
 methods.updateTodoById = async (req, res) => {
     try {
-        const todoId = req.params.id;
+        const todoId = req.params.id_todo;
         const update = await Todo.update(req.body, {
             where: { id: todoId }
         });
@@ -87,7 +68,7 @@ methods.updateTodoById = async (req, res) => {
 
 methods.deleteTodoById = async (req, res) => {
     try {
-        const todoId = req.params.id;
+        const todoId = req.params.id_todo;
         const deleted = await Todo.destroy({
             where: { id: todoId }
         })

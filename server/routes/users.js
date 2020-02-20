@@ -7,12 +7,12 @@ router.post('/login', auth.login);
 
 router.post('/signup', auth.signup)
 
-router.delete('/:id', auth.authUser, user.remove)
+router.delete('/:id_user', auth.authUser, user.remove)
 
-router.put('/:id', auth.authUser, user.update)
+router.put('/:id_user', auth.authUser, user.update)
 
 router.get('/', user.findAll)
-router.get('/:id', auth.authUser, user.getUserById)
+router.get('/:id_user', auth.authUser, user.getUserById)
 
 
 

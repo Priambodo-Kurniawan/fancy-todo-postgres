@@ -21,7 +21,7 @@ methods.findAll = async (req, res) => {
 
 methods.getUserById = async (req, res) => {
     try {
-        const userId = req.params.id;
+        const userId = req.params.id_user;
         const user = await User.findOne({
             where: { id: userId },
             include: [{
@@ -40,7 +40,7 @@ methods.getUserById = async (req, res) => {
             }
         });
     } catch (error) {
-        return res.status(500).send(error.message);
+        return res.status(500).json({error: error.message});
     }
 }
 
@@ -51,7 +51,7 @@ methods.update = async (req, res) => {
         req.body.password = hash
     }
     try {
-        const userId = req.params.id;
+        const userId = req.params.id_user;
         const password = req.body.password
         const update = await User.update(req.body, {
             where: { id: userId, password: password  }
@@ -61,13 +61,13 @@ methods.update = async (req, res) => {
             return res.status(200).json({ user: updatedUser });
         }
     } catch (error) {
-        return res.status(500).send(error.message);
+        return res.status(500).json({error: error.message});
     }
 }
 
 methods.remove = async (req, res) => {
     try {
-        const userId = req.params.id;
+        const userId = req.params.id_user;
         const deleted = await User.destroy({
             where: { id: userId }
         })
@@ -79,7 +79,7 @@ methods.remove = async (req, res) => {
         }
         throw new Error("User not found");
     } catch (error) {
-        return res.status(500).send(error.message);
+        return res.status(500).json({error: error.message});
     }
 }
 
