@@ -2,3 +2,13 @@ body {
     background-color: #edf2f7!important;
     min-height: 100vh;
 }
+
+/* card style */
+.uk-card-title {
+    font-weight: bolder;
+}
+
+/* form style */
+.uk-input, .uk-select, .uk-textarea {
+    border-radius: 4px;
+}

@@ -1,56 +1,92 @@
 // login
+let pathName = window.location.pathname;
 let page = {
-    login: {
+    '/': {
         name: 'login',
-        path: '/login'
+        path: '/login',
+        api: `${config.BASE_URL}/api/users/login`,
+        label: 'Login',
+        wrapper: '#login-container'
     },
-    register: {
+    '/login': {
+        name: 'login',
+        path: '/login',
+        api: `${config.BASE_URL}/api/users/login`,
+        label: 'Login',
+        wrapper: '#login-container'
+    },
+    '/register': {
         name: 'register',
-        path: '/register'
+        path: '/register',
+        api: `${config.BASE_URL}/api/users/signup`,
+        register: 'Register',
+        wrapper: '#register-container'
     },
-    todo: {
+    '/todo': {
         name: 'todo',
-        path: '/todo'
+        path: '/todo',
+        wrapper: '#todo-container'
     }
+}
+
+function initPage () {
+    pathName = window.location.pathname;
+    $('.container-component').hide();
+    $(`${page[pathName].wrapper}`).fadeIn( "slow" ); 
+    console.log('hai')
 }
 
 function setToken (token) {
     localStorage.setItem('token', token);
 }
 
-$("#form-login").submit(function(e){
-    let email = $('#form-email').val();
-    let password = $('#form-password').val();
+function loginRegister () {
+    let email = $(`#form-email-${page[pathName].name}`).val();
+    let password = $(`#form-password-${page[pathName].name}`).val();
 
     $.ajax({
         method: "POST",
-        url: `${config.BASE_URL}/api/users/login`,
+        url: `${page[pathName].api}`,
         data: { email, password }
     })
     .done(function( data ) {
+        history.pushState(page, page['/todo'].name, page['/todo'].path);
         Swal.fire({
             icon: 'success',
-            title: 'Login Success!',
+            title: `${page[pathName].label} success!`,
             showConfirmButton: false,
             timer: 1500
+        }).then((result) => {
+            // change path
+            page.data = data;
+            initPage();
         });
 
         // set to localstorage
         setToken(data.token);
-
-        // change path
-        page.data = data;
-        history.pushState(page, page.todo.name, page.todo.path)
     })
     .fail(function(err) {
         let message = err.responseJSON.message
         Swal.fire({
             icon: 'error',
-            title: 'Ops, login failed!',
+            title: `Ops, ${page[pathName].label} failed!`,
             showConfirmButton: false,
             text: message,
             timer: 1500
         });
     });
+}
+
+$("#form-login, #form-register").submit(function(e){
+    loginRegister();
     e.preventDefault();
+});
+
+
+// handle component to show based on url
+initPage();
+
+// back / forward init
+window.addEventListener("popstate", function(e) {
+    initPage();
 });
