@@ -19,7 +19,7 @@ let page = {
         name: 'register',
         path: '/register',
         api: `${config.BASE_URL}/api/users/signup`,
-        register: 'Register',
+        label: 'Register',
         wrapper: '#register-container'
     },
     '/todo': {
@@ -66,7 +66,8 @@ function loginRegister () {
         setToken(data.token);
     })
     .fail(function(err) {
-        let message = err.responseJSON.message
+        let message = err.responseJSON.message || err.responseJSON.error;
+        console.log(message);
         Swal.fire({
             icon: 'error',
             title: `Ops, ${page[pathName].label} failed!`,

@@ -10,10 +10,9 @@
 </head>
 <body>
     <div>
-        <div class="uk-flex-center uk-flex-middle" uk-height-viewport uk-grid>
-
-            <!-- start login page -->
-            <div class="uk-width-1-3@m container-component" id="login-container">
+        <!-- start login page -->
+        <div class="uk-flex-center uk-flex-middle container-component" uk-height-viewport uk-grid  id="login-container">
+            <div class="uk-width-1-3@m">
                 <div class="uk-card uk-card-default uk-card-body uk-border-rounded">
                     <h3 class="uk-card-title">Login</h3>
                     <form class="uk-form-stacked" id="form-login">
@@ -43,10 +42,12 @@
                     </form>
                 </div>
             </div>
-            <!-- end login page -->
+        </div>
+        <!-- end login page -->
 
-            <!-- start register page -->
-            <div class="uk-width-1-3@m container-component" id="register-container">
+        <!-- start register page -->
+        <div class="uk-flex-center uk-flex-middle container-component uk-margin-remove-top" uk-height-viewport uk-grid id="register-container">
+            <div class="uk-width-1-3@m">
                 <div class="uk-card uk-card-default uk-card-body uk-border-rounded">
                     <h3 class="uk-card-title">Register</h3>
                     <form class="uk-form-stacked" id="form-register">
@@ -76,8 +77,31 @@
                     </form>
                 </div>
             </div>
-            <!-- end register page -->
         </div>
+        <!-- end register page -->
+
+        <!-- start todo home page -->
+        <div class="uk-flex-center container-component uk-margin-remove-top" uk-height-viewport uk-grid id="todo-container">
+            <div class="uk-width-1-3@m uk-margin-top">
+                <div class="uk-card uk-card-default uk-padding-small uk-border-rounded">
+                    <div class="uk-grid-small" uk-grid>
+                        <div class="uk-width-auto" style="margin-top: 5px;">
+                            <h2 class="uk-h2"><b>18</b></h2>
+                        </div>
+                        <div class="uk-widht-auto" style="margin-top: 5px;">
+                            <p class="uk-text-meta">
+                                <b>Friday</b><br>
+                                20 February 2020
+                            </p>
+                        </div>
+                        <div class="uk-width-expand uk-text-right">
+                            <img class="uk-border-circle" src="https://getuikit.com/docs/images/avatar.jpg" width="50" height="50" alt="Border circle">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end todo home page -->
     </div>
     <!-- UIkit JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>

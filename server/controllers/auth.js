@@ -52,16 +52,16 @@ methods.login = async (req, res) => {
                     message: "password is incorrect"
                 });
             }
+        } else {
+            return res.status(404).json({
+                error: {
+                    code: 404,
+                    message: 'User with that email does not exists'
+                }
+            });
         }
-        return res.status(404).json({
-            error: {
-                code: 404,
-                message: 'User with that email does not exists'
-            }
-        });
     } catch (error) {
-        return error;
-        //return res.status(500).json({error: error.message});
+        return res.status(500).json({error: error.message});
     }
 }
   
