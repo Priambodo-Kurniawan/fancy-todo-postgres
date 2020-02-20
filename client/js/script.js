@@ -32,8 +32,7 @@ let page = {
 function initPage () {
     pathName = window.location.pathname;
     $('.container-component').hide();
-    $(`${page[pathName].wrapper}`).fadeIn( "slow" ); 
-    console.log('hai')
+    $(`${page[pathName].wrapper}`).fadeIn( "slow" );
 }
 
 function setToken (token) {

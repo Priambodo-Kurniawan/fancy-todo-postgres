@@ -30,21 +30,23 @@ methods.login = async (req, res) => {
 
     try {
         const user = await User.findOne({
-            where: { email: email }
+            where: { email: email },
         });
 
         if (user) {
             const isAuthenticated = await bcrypt.compare(password, user.password);
             if (isAuthenticated) {
-                const token = jwt.sign({
+                let userData = {
                     id: user.id, 
                     email: user.email, 
-                    username: user.username
-                }, secret);
+                    name: user.name
+                }
+                const token = jwt.sign(userData, secret);
                 res.status(200).json({
                     code: 200,
                     message: "login success",
-                    token: token
+                    token: token,
+                    user: userData
                 });
             } else {
                 res.status(400).json({
