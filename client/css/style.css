@@ -12,3 +12,29 @@ body {
 .uk-input, .uk-select, .uk-textarea {
     border-radius: 4px;
 }
+
+/* todo list */
+#checked-todo li > div span {
+    text-decoration: line-through;
+}
+#checked-todo li > div .uk-icon {
+    position: relative;
+    top: -2px;
+}
+.uk-checkbox, .uk-radio {
+    border-radius: 50%;
+}
+
+/* add button */
+.add-button {
+    background: rgb(253,29,29);
+    background: linear-gradient(138deg, rgba(253,29,29,1) 0%, rgba(252,176,69,1) 100%);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    color: white;
+    font-size: 2em;
+    padding: 0;
+    text-align: center;
+    margin-bottom: 30px;
+}
