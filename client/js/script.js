@@ -38,6 +38,8 @@ function initPage () {
     if (pathName == '/todo') {
         getTodo();
     }
+
+    initDay();
 };
 
 function setToken (token) {
@@ -95,7 +97,7 @@ function getTodo () {
     })
     .then(function(data) {
         // reset container
-        // $('#checked-todo, #list-todo').html('');
+        $('#checked-todo, #list-todo').html('');
         let listTodo = data.user.todos;
         history.state.data.todos = listTodo;
 
@@ -120,7 +122,7 @@ function getTodo () {
                             <ul uk-nav class='uk-nav-default uk-padding-remove uk-margin-small-left'>
                                 <li>
                                     <a href='javascript:void(0)' onclick='showMenuTodo(${todo.id})'>
-                                        <span class='uk-margin-small-right uk-icon uk-float-right' uk-icon='icon: more-vertical; ratio: 0.8;'></span>
+                                        <span class='uk-margin-small-left uk-icon uk-float-right' uk-icon='icon: more-vertical; ratio: 0.8;'></span>
                                     </a>
                                 </li>
                             </ul>
@@ -161,6 +163,7 @@ function editStatus(idTodo, status) {
     })
     .then(function(data) {
         getTodo();
+        showStatusNotification('Edit successful!');
     })
     .fail(function(err) {
         let message = err.responseJSON.message || err.responseJSON.error;
@@ -205,12 +208,10 @@ function addEditTodo (type) {
         defaultDate: formatedDate
     });
     
-    if (type == 'edit') {
-        $('#form-todo-id').val(selectedTodo.id);
-        $('#form-todo-title').val(selectedTodo.title);
-        $('#form-todo-desc').val(selectedTodo.description);
-        $('#form-todo-due').val(formatedDate);
-    }
+    $('#form-todo-id').val(selectedTodo.id);
+    $('#form-todo-title').val(selectedTodo.title);
+    $('#form-todo-desc').val(selectedTodo.description);
+    $('#form-todo-due').val(formatedDate);
 
     UIkit.modal('#modal-add-todo').show();
 }
@@ -238,6 +239,7 @@ function addEditTodoCommit () {
     .then(function(data) {
         getTodo();
         UIkit.modal('#modal-add-todo').hide();
+        showStatusNotification('Edit successful!');
     })
     .fail(function(err) {
         let message = err.responseJSON.error.message || err.responseJSON.error;
@@ -253,10 +255,10 @@ function addEditTodoCommit () {
 
 function showStatusNotification (message) {
     UIkit.notification({
-        message: `<span uk-icon='icon: check'></span> ${message}`,
+        message: `<div class='uk-text-small uk-text-center'>${message}</div>`,
         status: 'primary',
-        pos: 'top-right',
-        timeout: 5000
+        pos: 'top-center',
+        timeout: 3000
     });
 }
 
@@ -284,6 +286,7 @@ function deleteTodo () {
             .then(function(data) {
                 UIkit.modal('#modal-menu-todo').hide();
                 getTodo();
+                showStatusNotification('Todo Deleted');
             })
             .fail(function(err) {
                 let message = err.responseJSON.message || err.responseJSON.error;
@@ -299,6 +302,12 @@ function deleteTodo () {
     })
 }
 
+function initDay () {
+    $('#this-date').text(moment().format('DD'));
+    $('#this-day').text(moment().format('dddd'));
+    $('#this-fulldate').text(moment().format('MMMM YYYY'));
+}
+
 $('#form-login, #form-register').submit(function(e){
     loginRegister();
     e.preventDefault();
@@ -307,7 +316,7 @@ $('#form-login, #form-register').submit(function(e){
 $('#form-add-edit-todo').submit(function(e) {
     addEditTodoCommit();
     e.preventDefault();
-})
+});
 
 // listen to checkbox when checked
 $('body').on('change', '.check-item', function() {

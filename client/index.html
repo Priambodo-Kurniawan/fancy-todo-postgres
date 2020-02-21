@@ -89,12 +89,12 @@
                     <div class="uk-card uk-card-default uk-padding-small uk-border-rounded">
                         <div class="uk-grid-small" uk-grid>
                             <div class="uk-width-auto" style="margin-top: 5px;">
-                                <h2 class="uk-h2"><b>18</b></h2>
+                                <h2 class="uk-h2"><b><span id="this-date">18</span></b></h2>
                             </div>
                             <div class="uk-widht-auto" style="margin-top: 5px;">
                                 <p class="uk-text-meta">
-                                    <b>Friday</b><br>
-                                    20 February 2020
+                                    <b> <span id="this-day">Friday</span> </b><br>
+                                    <span id="this-fulldate">20 February 2020</span> 
                                 </p>
                             </div>
                             <div class="uk-width-expand uk-text-right">
@@ -124,34 +124,6 @@
                             <div class="uk-width-1-1">
                                 <h3 class="uk-h3"><b>Checked Todo</b></h3>
                                 <ul class="uk-list uk-list-divider" id="checked-todo">
-                                    <li class='uk-margin'>
-                                        <div>
-                                            <div class="uk-grid-collapse" uk-grid>
-                                                <div class="uk-width-expand">
-                                                    <label>
-                                                        <input 
-                                                            id='list-todo-${todo.id}' 
-                                                            style='margin-right: 5px;' 
-                                                            class='uk-checkbox check-item' 
-                                                            type='checkbox'
-                                                            ${todo.id_status}> 
-                                                        <span>${todo.title}</span>
-                                                        <span class="uk-text-meta uk-text-small uk-float-right">21 Feb</span>
-                                                    </label>
-                                                </div>
-                                                <div class="uk-width-auto">
-                                                    <ul uk-nav class='uk-nav-default uk-padding-remove uk-margin-small-left'>
-                                                        <li>
-                                                            <a href='javascript:void(0)' onclick=''>
-                                                                <span class='uk-margin-small-right uk-icon uk-float-right' uk-icon='icon: more-vertical; ratio: 0.8;'></span>
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class='uk-text-meta' style='margin-left: 25px'>${todo.description}</div>
-                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -160,6 +132,7 @@
             </div>
             <div id="modal-menu-todo" class="uk-flex-top" uk-modal>
                 <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical uk-border-rounded uk-width-1-4@m">
+                    <button class="uk-modal-close-default" type="button" uk-close></button>
                     <input type="hidden" id="id-todo-selected">
                     <ul class="uk-nav uk-nav-default">
                         <li>
@@ -178,12 +151,13 @@
             </div>
             <div id="modal-add-todo" class="uk-flex-top" uk-modal>
                 <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical uk-border-rounded uk-width-1-3@m">
+                    <button class="uk-modal-close-default" type="button" uk-close></button>
                     <h3 class="uk-h3"><b> <span id="title-menu">Edit</span> Todo</b></h3>
                     <form class="uk-form-stacked" id="form-add-edit-todo">
                         <div class="uk-margin">
                             <label class="uk-form-label" for="form-todo-title">Title</label>
                             <div class="uk-form-controls">
-                                <input class="uk-input" id="form-todo-title" type="text" required>
+                                <input class="uk-input" id="form-todo-title" type="text" spellcheck="false" maxlength="30" required>
                                 <input class="uk-input" id="form-todo-id" type="hidden">
                             </div>
                         </div>
@@ -191,7 +165,7 @@
                         <div class="uk-margin">
                             <label class="uk-form-label" for="form-todo-desc">Description</label>
                             <div class="uk-form-controls">
-                                <input class="uk-input" id="form-todo-desc" type="text" required>
+                                <input class="uk-input" id="form-todo-desc" type="text" spellcheck="false" maxlength="70" required>
                             </div>
                         </div>
                         
