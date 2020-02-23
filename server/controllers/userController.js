@@ -26,8 +26,9 @@ methods.getUserById = async (req, res) => {
             where: { id: userId },
             include: [{
                 model: Todo,
-                as: 'todos' // specifies how we want to be able to access our joined rows on the returned data
+                as: 'todos', // specifies how we want to be able to access our joined rows on the returned data
             }],
+            order: [['todos','due_date', 'asc']],
             attributes: { exclude: ['password'] }
         });
         if (user) {
