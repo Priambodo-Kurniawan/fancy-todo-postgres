@@ -7,33 +7,43 @@ let page = {
         path: '/login',
         api: `${config.BASE_URL}/api/users/login`,
         label: 'Login',
-        wrapper: '#login-container'
+        wrapper: '#login-container',
+        status: 'public'
     },
     '/login': {
         name: 'login',
         path: '/login',
         api: `${config.BASE_URL}/api/users/login`,
         label: 'Login',
-        wrapper: '#login-container'
+        wrapper: '#login-container',
+        status: 'public'
     },
     '/register': {
         name: 'register',
         path: '/register',
         api: `${config.BASE_URL}/api/users/signup`,
         label: 'Register',
-        wrapper: '#register-container'
+        wrapper: '#register-container',
+        status: 'public'
     },
     '/todo': {
         name: 'todo',
         path: '/todo',
-        wrapper: '#todo-container'
+        wrapper: '#todo-container',
+        status: 'private'
     }
 };
 
 function initPage () {
+    token = localStorage.getItem('token');
     pathName = window.location.pathname;
     $('.container-component').hide();
     $(`${page[pathName].wrapper}`).fadeIn( 'slow' );
+
+    if (!token && page[pathName].status == 'private') {
+        window.location = '/';
+        return
+    }
 
     if (pathName == '/todo') {
         getTodo();
@@ -42,8 +52,9 @@ function initPage () {
     initDay();
 };
 
-function setToken (token) {
+function setToken (token, callback) {
     localStorage.setItem('token', token);
+    callback();
 };
 
 function loginRegister () {
@@ -57,21 +68,21 @@ function loginRegister () {
     })
     .done(function( data ) {
         page.data = data;
-        history.pushState(page, page['/todo'].name, page['/todo'].path);
         Swal.fire({
             icon: 'success',
             title: `${page[pathName].label} success!`,
             showConfirmButton: false,
             timer: 1500
         }).then((result) => {
-            // change path
+            // set to localstorage
             page.data = data;
-            initPage();
+            setToken(data.token, function() {
+                history.pushState(page, page['/todo'].name, page['/todo'].path);
+                // change path
+                initPage();
+            });
         });
 
-        // set to localstorage
-        setToken(data.token);
-        getTodo();
     })
     .fail(function(err) {
         let message = err.responseJSON.message || err.responseJSON.error;
