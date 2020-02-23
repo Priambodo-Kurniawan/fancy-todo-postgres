@@ -100,6 +100,9 @@ function getTodo () {
         $('#checked-todo, #list-todo').html('');
         let listTodo = data.user.todos;
         history.state.data.todos = listTodo;
+        
+        let isEmptyTodo = true;
+        let isEmptyCheckedTodo = true;
 
         listTodo.forEach(function(todo) {
             let template = `
@@ -134,10 +137,20 @@ function getTodo () {
 
             if (todo.id_status == config.TODO_STATUS_DONE) {
                 $('#checked-todo').append(template);
+                isEmptyCheckedTodo = false;
             } else {
                 $('#list-todo').append(template);
+                isEmptyTodo = false;
             }
         });
+        
+        // set empty container
+        if (isEmptyCheckedTodo) {
+            setEmptyData('#checked-todo');
+        }
+        if (isEmptyTodo) {
+            setEmptyData('#list-todo');
+        }
     })
     .fail(function(err) {
         let message = err.responseJSON.message || err.responseJSON.error;
@@ -163,7 +176,7 @@ function editStatus(idTodo, status) {
     })
     .then(function(data) {
         getTodo();
-        showStatusNotification('Edit successful!');
+        showStatusNotification('Successfully edited!');
     })
     .fail(function(err) {
         let message = err.responseJSON.message || err.responseJSON.error;
@@ -239,7 +252,7 @@ function addEditTodoCommit () {
     .then(function(data) {
         getTodo();
         UIkit.modal('#modal-add-todo').hide();
-        showStatusNotification('Edit successful!');
+        showStatusNotification('Successfully edited!');
     })
     .fail(function(err) {
         let message = err.responseJSON.error.message || err.responseJSON.error;
@@ -306,6 +319,16 @@ function initDay () {
     $('#this-date').text(moment().format('DD'));
     $('#this-day').text(moment().format('dddd'));
     $('#this-fulldate').text(moment().format('MMMM YYYY'));
+}
+
+function setEmptyData (container, text='No Data') {
+    let template = `<li>
+        <div class="uk-text-center uk-margin-medium-bottom">
+            <img width="170" src="./assets/no-data.png" alt="no data">
+            <h5 class="uk-margin-remove"><b>${text}</b></h5>
+        </div>
+    </li>`
+    $(container).html(template);
 }
 
 $('#form-login, #form-register').submit(function(e){
