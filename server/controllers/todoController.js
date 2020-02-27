@@ -5,7 +5,7 @@ const util = require('../helpers/util');
 // var util = require('../helpers/util');
 var methods = {};
 
-methods.getAll = async (req, res) => {
+methods.getAll = async (req, res, next) => {
     try {
         const todos = await Todo.findAll();
         if (todos) {
@@ -16,7 +16,7 @@ methods.getAll = async (req, res) => {
     }
 };
 
-methods.create = async (req, res) => {
+methods.create = async (req, res, next) => {
     const token = req.headers.token;
     util.userInfo(token, async function(user){
         try {
@@ -31,7 +31,7 @@ methods.create = async (req, res) => {
     });
 };
 
-methods.getTodoById = async (req, res) => {
+methods.getTodoById = async (req, res, next) => {
     try {
         const todoId = req.params.id_todo;
         const todo = await Todo.findOne({
@@ -49,7 +49,7 @@ methods.getTodoById = async (req, res) => {
     }
 };
 
-methods.updateTodoById = async (req, res) => {
+methods.updateTodoById = async (req, res, next) => {
     try {
         const todoId = req.params.id_todo;
         const update = await Todo.update(req.body, {
@@ -64,7 +64,7 @@ methods.updateTodoById = async (req, res) => {
     }
 };
 
-methods.deleteTodoById = async (req, res) => {
+methods.deleteTodoById = async (req, res, next) => {
     try {
         const todoId = req.params.id_todo;
         const deleted = await Todo.destroy({

@@ -8,7 +8,7 @@ const db = require('../database/models');
 const { User } = db;
 var methods = {}
 
-methods.signup = async (req, res) => {
+methods.signup = async (req, res, next) => {
     const salt = bcrypt.genSaltSync(saltRounds);
     const hash = bcrypt.hashSync(req.body.password, salt);
     req.body.password = hash;
@@ -24,7 +24,7 @@ methods.signup = async (req, res) => {
     }
 }
 
-methods.login = async (req, res) => {
+methods.login = async (req, res, next) => {
     var email = req.body.email;
     var password = req.body.password;
 

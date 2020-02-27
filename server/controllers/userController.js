@@ -6,7 +6,7 @@ const { User, Todo } = db;
 var bcrypt = require('bcrypt');
 var methods = {}
 
-methods.findAll = async (req, res) => {
+methods.findAll = async (req, res, next) => {
     try {
         const users = await User.findAll({
             attributes: { exclude: ['password'] }
@@ -19,7 +19,7 @@ methods.findAll = async (req, res) => {
     }
 }
 
-methods.getUserById = async (req, res) => {
+methods.getUserById = async (req, res, next) => {
     try {
         const userId = req.params.id_user;
         const user = await User.findOne({
@@ -43,7 +43,7 @@ methods.getUserById = async (req, res) => {
     }
 }
 
-methods.update = async (req, res) => {
+methods.update = async (req, res, next) => {
     if (req.body.password){
         var salt = await crypt.genSaltSync(saltRounds);
         var hash = await bcrypt.hashSync(req.body.password, salt);
@@ -64,7 +64,7 @@ methods.update = async (req, res) => {
     }
 }
 
-methods.remove = async (req, res) => {
+methods.remove = async (req, res, next) => {
     try {
         const userId = req.params.id_user;
         const deleted = await User.destroy({
