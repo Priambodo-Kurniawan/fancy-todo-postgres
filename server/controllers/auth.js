@@ -20,7 +20,7 @@ methods.signup = async (req, res) => {
             message: "User Created!"
         });
     } catch (error) {
-        return res.status(500).json({error: error.message});
+        return next(error);
     }
 }
 
@@ -49,21 +49,21 @@ methods.login = async (req, res) => {
                     user: userData
                 });
             } else {
-                res.status(400).json({
+                next({
                     code: 400,
                     message: "password is incorrect"
                 });
             }
         } else {
-            return res.status(404).json({
-                error: {
-                    code: 404,
-                    message: 'User with that email does not exists'
-                }
+            return next({
+                message: 'User with that email does not exists',
             });
         }
     } catch (error) {
-        return res.status(500).json({error: error.message});
+        return next({
+            code: 500,
+            message: "password is incorrect"
+        });
     }
 }
   
@@ -72,21 +72,19 @@ methods.authUser = async (req, res, next) => {
         const token = req.headers.token;
         jwt.verify(token, secret, (err, decoded) => {
             let idUser = req.params.id_user || req.body.user_id;
-            console.log(idUser);
+
             if (decoded.id == idUser){
                 req.body.token = token;
                 next()
             } else {
-                res.status(401).json({
-                    error: {
-                        code: 401,
-                        message: 'Not Authorized'
-                    }
+                return next({
+                    code: 401,
+                    message: 'Not Authorized'
                 });
             }
         });
     } catch (error) {
-        return res.status(500).send(error.message);
+        return next(error);
     }
     
 }
@@ -110,7 +108,7 @@ methods.allUser = async (req, res, next) => {
             })
         }
     } catch (error) {
-        return res.status(500).send(error.message);
+        return next(error);
     }
     
 }

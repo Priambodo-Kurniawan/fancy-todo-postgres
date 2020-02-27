@@ -15,7 +15,7 @@ methods.findAll = async (req, res) => {
             return res.status(200).json({ users });
         };
     } catch (error) {
-        return res.status(500).json({error: error.message});
+        return next(error);
     }
 }
 
@@ -34,14 +34,12 @@ methods.getUserById = async (req, res) => {
         if (user) {
             return res.status(200).json({ user })
         }
-        return res.status(404).json({
-            error: {
-                code: 404,
-                message: 'user with the specified ID does not exists'
-            }
+        return next({
+            code: 404,
+            message: 'user with the specified ID does not exists'
         });
     } catch (error) {
-        return res.status(500).json({error: error.message});
+        return next(error);
     }
 }
 
@@ -62,7 +60,7 @@ methods.update = async (req, res) => {
             return res.status(200).json({ user: updatedUser });
         }
     } catch (error) {
-        return res.status(500).json({error: error.message});
+        return next(error);
     }
 }
 
@@ -80,7 +78,7 @@ methods.remove = async (req, res) => {
         }
         throw new Error("User not found");
     } catch (error) {
-        return res.status(500).json({error: error.message});
+        return next(error);
     }
 }
 
