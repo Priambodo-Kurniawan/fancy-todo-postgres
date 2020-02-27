@@ -18,7 +18,8 @@
   },
   "devDependencies": {},
   "scripts": {
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "start": "node app.js"
   },
   "keywords": [
     "todo",
