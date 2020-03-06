@@ -1,8 +1,5 @@
 const db = require('../database/models');
 const { Todo } = db;
-const util = require('../helpers/util');
-
-// var util = require('../helpers/util');
 var methods = {};
 
 methods.getAll = (req, res, next) => {
@@ -30,7 +27,7 @@ methods.create = (req, res, next) => {
 };
 
 methods.getTodoById = (req, res, next) => {
-    const idTodo = req.params.id_todo;
+    let idTodo = req.params.id_todo;
     Todo.findByPk(idTodo)
     .then(todo => {
         if (todo) res.status(200).json({ todo });
@@ -39,40 +36,45 @@ methods.getTodoById = (req, res, next) => {
             message: 'Data not found!'
         }
     })
-    .catch(err => next(err))
+    .catch(err => next(err));
 };
 
-methods.updateTodoById = async (req, res, next) => {
-    try {
-        const todoId = req.params.id_todo;
-        const update = await Todo.update(req.body, {
-            where: { id: todoId }
+methods.updateTodoById = (req, res, next) => {
+    let idTodo = req.params.id_todo;
+    const {title, description, id_status, due_date} = req.body;
+    Todo.update({
+        title,
+        description,
+        id_status,
+        due_date
+    }, {
+        where: {
+            id: idTodo
+        }
+    })
+    .then(result => {
+        return Todo.findByPk(idTodo);
+    })
+    .then(updatedTodo => {
+        return res.status(200).json({ todo: updatedTodo });
+    })
+    .catch(err => next(err));
+};
+
+methods.deleteTodoById = (req, res, next) => {
+    let idTodo = req.params.id_todo;
+    Todo.destroy({
+        where: {
+            id: idTodo
+        }
+    })
+    .then(result => {
+        return res.status(200).json({
+            status: true,
+            message: "Todo deleted"
         });
-        if (update) {
-            const updatedTodo = await Todo.findOne({ where: { id: todoId }});
-            return res.status(200).json({ todo: updatedTodo });
-        }
-    } catch (error) {
-        return next(error)
-    }
-};
-
-methods.deleteTodoById = async (req, res, next) => {
-    try {
-        const todoId = req.params.id_todo;
-        const deleted = await Todo.destroy({
-            where: { id: todoId }
-        })
-        if (deleted) {
-            return res.status(200).json({
-                status: true,
-                message: "Todo deleted"
-            });
-        }
-        throw new Error("Todo not found");
-    } catch (error) {
-        return next(error);
-    }
+    })
+    .catch(err => next(err));
 };
 
 module.exports = methods;
