@@ -5,48 +5,41 @@ const util = require('../helpers/util');
 // var util = require('../helpers/util');
 var methods = {};
 
-methods.getAll = async (req, res, next) => {
-    try {
-        const todos = await Todo.findAll();
-        if (todos) {
-            return res.status(200).json({ todos })
-        };
-    } catch (error) {
-        return next(error);
-    }
+methods.getAll = (req, res, next) => {
+    Todo.findAll()
+    .then(todos => {
+        return res.status(200).json({ todos });
+    })
+    .catch(err => next(err));
 };
 
-methods.create = async (req, res, next) => {
-    const token = req.headers.token;
-    util.userInfo(token, async function(user){
-        try {
-            req.body.user_id = user.id
-            const todo = await Todo.create(req.body);
-            return res.status(201).json ({
-                todo
-            });
-        } catch (error) {
-            return next(error);
-        }
-    });
-};
-
-methods.getTodoById = async (req, res, next) => {
-    try {
-        const todoId = req.params.id_todo;
-        const todo = await Todo.findOne({
-            where: { id: todoId }
+methods.create = (req, res, next) => {
+    Todo.create({
+        title: req.body.title,
+        description: req.body.description,
+        id_status: req.body.id_status,
+        due_date: req.body.due_date,
+        user_id: req.decoded.id
+    })
+    .then(todo => {
+        res.status(201).json({
+           todo 
         });
-        if (todo) {
-            return res.status(200).json({ todo })
-        };
-        return next({
+    })
+    .catch(err => next(err));
+};
+
+methods.getTodoById = (req, res, next) => {
+    const idTodo = req.params.id_todo;
+    Todo.findByPk(idTodo)
+    .then(todo => {
+        if (todo) res.status(200).json({ todo });
+        else throw {
             code: 404,
-            message: 'Todo with the specified ID does not exists'
-        });
-    } catch (error) {
-        return next(error);
-    }
+            message: 'Data not found!'
+        }
+    })
+    .catch(err => next(err))
 };
 
 methods.updateTodoById = async (req, res, next) => {

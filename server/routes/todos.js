@@ -1,21 +1,25 @@
 const { Router } = require('express');
 const router  = Router();
 const todo = require('../controllers/todoController');
-const auth = require('../controllers/auth');
+const { authentication } = require('../middlewares/authentication');
+const { authorization } = require('../middlewares/authorization');
 
 router.get('/', todo.getAll);
 
+
+router.use(authentication);
+
 // create new task by user id
-router.post('/:id_user/create', auth.authUser, todo.create)
+router.post('/create', todo.create)
 
 // get task by id
-router.get('/:id_todo', auth.authUser, todo.getTodoById)
+router.get('/:id_todo', authorization, todo.getTodoById)
 
 // update task
-router.put('/:id_todo', auth.authUser, todo.updateTodoById)
+router.put('/:id_todo', authorization, todo.updateTodoById)
 
 // delete task
-router.delete('/:id_todo', auth.authUser, todo.deleteTodoById)
+router.delete('/:id_todo', authorization, todo.deleteTodoById)
 
 
 

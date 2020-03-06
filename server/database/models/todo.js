@@ -1,12 +1,19 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const Todo = sequelize.define('Todo', {
-    title: { 
+
+  const Model = sequelize.Sequelize.Model;
+  class Todo extends Model {};
+
+  Todo.init({
+    title: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        len: [3]
-      }
+        len: {
+          args: [3],
+          msg: 'Title length minimal 3 character'
+        }
+      },
     },
     description: { 
       type: DataTypes.TEXT
@@ -20,6 +27,13 @@ module.exports = (sequelize, DataTypes) => {
     },
     due_date: { 
       type: DataTypes.DATE,
+      validate: {
+        dateMoreThanNow(value) {
+          if (value < Date.now()) {
+            throw new Error('Due date is more than now! ' + value);
+          }
+        }
+      }
     },
     created_at: { 
       type: DataTypes.DATE
@@ -27,9 +41,11 @@ module.exports = (sequelize, DataTypes) => {
     updated_at: { 
       type: DataTypes.DATE
     }
-  }, {});
-  Todo.associate = function(models) {
-    // associations can be defined here
+  }, {
+    sequelize
+  });
+
+  Todo.associate = (models) => {
     Todo.belongsTo(models.User, {
       foreignKey: 'user_id',
       as: 'author',

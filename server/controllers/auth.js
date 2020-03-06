@@ -1,70 +1,68 @@
 require('dotenv').config();
 const secret = process.env.TOKEN_SECRET;
-const saltRounds = 10;
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+const { comparePassword } = require('../helpers/bcriptjs');
+const { generateToken } = require('../helpers/jwt');
 
 const db = require('../database/models');
 const { User } = db;
-var methods = {}
+var methods = {};
 
-methods.signup = async (req, res, next) => {
-    const salt = bcrypt.genSaltSync(saltRounds);
-    const hash = bcrypt.hashSync(req.body.password, salt);
-    req.body.password = hash;
-    
-    try {
-        const user = await User.create(req.body);
+methods.signup = (req, res, next) => {
+    User.create({
+        email: req.body.email,
+        password: req.body.password
+    })
+    .then(result => {
         return res.status(201).json ({
             status: true,
             message: "User Created!"
         });
-    } catch (error) {
-        return next(error);
-    }
+    })
+    .catch(err => next(err));
 }
 
-methods.login = async (req, res, next) => {
+methods.login = (req, res, next) => {
     var email = req.body.email;
-    var password = req.body.password;
+    var inputPassword = req.body.password;
 
-    try {
-        const user = await User.findOne({
-            where: { email: email },
-        });
-
-        if (user) {
-            const isAuthenticated = await bcrypt.compare(password, user.password);
-            if (isAuthenticated) {
-                let userData = {
-                    id: user.id, 
-                    email: user.email, 
-                    name: user.name
-                }
-                const token = jwt.sign(userData, secret);
-                res.status(200).json({
-                    code: 200,
-                    message: "login success",
-                    token: token,
-                    user: userData
-                });
-            } else {
-                next({
-                    code: 400,
-                    message: "password is incorrect"
-                });
-            }
+    User.findOne({
+        where: { email: email },
+    })
+    .then(result => {
+        if (result) {
+            return result;
         } else {
-            return next({
-                message: 'User with that email does not exists',
-            });
+            throw {
+                code: 400,
+                message: "email/password is incorrect"
+            }
         }
-    } catch (error) {
-        return next({
-            code: 500,
-            message: "password is incorrect"
-        });
-    }
+    })
+    .then(result => {
+        const isAuthenticated = comparePassword(inputPassword, result.password);
+        if (isAuthenticated) {
+            const userData = {
+                id: result.id,
+                email: result.email,
+                name: result.name
+            };
+            const token = generateToken(userData);
+            return res.status(200).json({
+                code: 200,
+                message: "login success",
+                token: token
+            });
+        } else {
+            throw {
+                code: 400,
+                message: "email/password is incorrect"
+            }
+        }
+    })
+    .catch(err => {
+        next(err);
+    });
 }
   
 methods.authUser = async (req, res, next) => {
